@@ -3,8 +3,8 @@ import math
 
 def avalia_mochila(estado, pesos, valores, capacidade):
     """
-    Calcula o valor da mochila. 
-    Retorna 0 se exceder a capacidade (penalidade).
+    Calcula o valor da mochila
+    Retorna 0 se exceder a capacidade (penalidade)
     """
     peso_total = sum(estado[i] * pesos[i] for i in range(len(estado)))
     valor_total = sum(estado[i] * valores[i] for i in range(len(estado)))
@@ -16,7 +16,7 @@ def avalia_mochila(estado, pesos, valores, capacidade):
 
 def gera_vizinho(estado):
     """
-    Gera um vizinho invertendo o estado de um item aleatório.
+    Gera um vizinho invertendo o estado de um item aleatório
     """
     vizinho = estado.copy()
     idx = random.randint(0, len(estado) - 1)
@@ -25,8 +25,8 @@ def gera_vizinho(estado):
 
 def criar_funcao_temperatura(t_inicial, t_final, taxa_resfriamento, iteracoes_por_temp):
     """
-    Gera uma função de temperatura pelo tempo.
-    Retorna uma função (callable) T(tempo).
+    Gera uma função de temperatura pelo tempo
+    Retorna uma função (callable) T(tempo)
     """
     def T(tempo):
         # Descobre em qual ciclo está
@@ -45,7 +45,7 @@ def criar_funcao_temperatura(t_inicial, t_final, taxa_resfriamento, iteracoes_po
 
 def tempera_simulada(pesos, valores, capacidade, funcao_temperatura):
     """
-    Têmpera Simulada refatorada para receber a função de resfriamento T(t).
+    Têmpera Simulada refatorada para receber a função de resfriamento T(t)
     """
     n = len(pesos)
     estado_atual = [0] * n 
@@ -91,11 +91,22 @@ def tempera_simulada(pesos, valores, capacidade, funcao_temperatura):
 
 
 if __name__ == "__main__":
-    pesos_itens = [10, 20, 30, 40, 50]
-    valores_itens = [20, 30, 66, 40, 60]
-    capacidade_mochila = 100
+    # Definição do Problema
+    itens = [
+        {"peso": 2, "valor": 10},
+        {"peso": 3, "valor": 15},
+        {"peso": 5, "valor": 40},
+        {"peso": 7, "valor": 35},
+        {"peso": 1, "valor": 5},
+        {"peso": 4, "valor": 25},
+        {"peso": 1, "valor": 15}
+    ]
+    pesos_itens = [item["peso"] for item in itens]
+    valores_itens = [item["valor"] for item in itens]
+    capacidade_mochila = 10
+    num_itens = len(pesos_itens)
     
-    # 1. Criamos a função de temperatura injetando os parâmetros
+    # Função de temperatura injetando os parâmetros
     funcao_T_do_tempo = criar_funcao_temperatura(
         t_inicial=1000, 
         t_final=0.01, 
@@ -103,7 +114,7 @@ if __name__ == "__main__":
         iteracoes_por_temp=100
     )
     
-    # 2. Passamos a função gerada para a Têmpera Simulada
+    # Função de Têmpera Simulada
     print("Iniciando Têmpera Simulada com decaimento desacoplado...")
     melhor_solucao, valor_maximo = tempera_simulada(
         pesos=pesos_itens, 
@@ -114,7 +125,14 @@ if __name__ == "__main__":
     
     peso_final = sum(melhor_solucao[i] * pesos_itens[i] for i in range(len(melhor_solucao)))
     
-    print("\n--- Resultados ---")
+    print("\n===============================")
+    print("       RESULTADO FINAL         ")
+    print("===============================")
     print(f"Melhor combinação: {melhor_solucao}")
-    print(f"Valor Total Alcançado: {valor_maximo}")
-    print(f"Peso Total: {peso_final} / {capacidade_mochila}")
+    print(f"Valor Total Gerado: {valor_maximo}")
+    print(f"Capacidade Ocupada: {peso_final} / {capacidade_mochila}")
+
+    print("\nDetalhes dos itens selecionados:")
+    for i in range(num_itens):
+        if melhor_solucao[i] == 1:
+            print(f" -> Item {i+1} (Peso: {itens[i]['peso']}, Valor: {itens[i]['valor']})")
